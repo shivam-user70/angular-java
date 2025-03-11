@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        DOCKER_USER = credentials('docker-username') // Add Jenkins credential ID
-        DOCKER_PASSWORD = credentials('docker-password')
+            DOCKER_CREDENTIALS = credentials('docker-hub-credentials') // Use the ID you created
+}
     }
     stages {
         stage('Pull Code') {
@@ -18,7 +18,7 @@ pipeline {
         stage('Build & Push Docker Image') {
             steps {
                 sh '''
-                echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+                echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin
                 docker build -t shivam/combine-backend51416:latest .
                 docker push shivam/combine-backend51416:latest
                 docker rmi -f shivam/combine-backend51416:latest
