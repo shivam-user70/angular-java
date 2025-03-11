@@ -1,25 +1,35 @@
 pipeline {
     agent any
-    stages{
-        stage('pull'){
-            steps{
+    environment {
+        DOCKER_USER = credentials('docker-username') // Add Jenkins credential ID
+        DOCKER_PASSWORD = credentials('docker-password')
+    }
+    stages {
+        stage('Pull Code') {
+            steps {
                 git branch: 'main', url: 'https://github.com/shivam-user70/angular-java.git'
             }
         }
-        stage('build'){
-            steps{
+        stage('Build Project') {
+            steps {
                 sh 'mvn clean package'
             }
         }
-        stage('deploy'){
-            steps{
+        stage('Build & Push Docker Image') {
+            steps {
                 sh '''
-                docker build . -t shivam/combine-backend51416:latest
+                echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+                docker build -t shivam/combine-backend51416:latest .
                 docker push shivam/combine-backend51416:latest
-                docker rmi shivam/combine-backend51416:latest
+                docker rmi -f shivam/combine-backend51416:latest
+                '''
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
                 kubectl apply -f ./yaml/
                 '''
-                
             }
         }
     }
