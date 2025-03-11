@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: backend-app
-          image: shivam/combine-backend51416:latest
+          image: shivam592/combine-backend51416:latest
           ports:
             - containerPort: 8080
