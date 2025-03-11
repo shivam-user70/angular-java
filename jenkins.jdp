@@ -1,8 +1,7 @@
 pipeline {
     agent any
     environment {
-            DOCKER_CREDENTIALS = credentials('docker-hub-credentials') // Use the ID you created
-}
+        DOCKER_CREDENTIALS = credentials('docker-hub-credentials') // Use the correct Jenkins credential ID
     }
     stages {
         stage('Pull Code') {
